@@ -19,9 +19,9 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
 ELO_API_KEY = os.getenv("API_KEY")
 
-DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,https://drainless-ungrumpy-messiah.ngrok-free.dev").split(",")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,https://drainless-ungrumpy-messiah.ngrok-free.dev,testserver").split(",")
 
 # --------------------------------------------------
 # APPS

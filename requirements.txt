@@ -1,0 +1,10 @@
+Django
+djangorestframework
+python-dotenv
+whitenoise
+django-cors-headers
+discord.py
+aiohttp
+daphne
+channels
+requests

@@ -11,7 +11,7 @@ import os
 from pathlib import Path
 from django.db.models import Avg, Max
 
-# Load .env
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 API_KEY = os.getenv("API_KEY")
@@ -64,23 +64,23 @@ def set_elo(request):
     except (ValueError, TypeError):
         return Response({"error": f"Invalid ELO value: {elo}. Must be an integer."}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Get or create player
+    
     player, _ = Player.objects.get_or_create(ign=ign)
 
-    # Get or create elo entry with defaults
+    
     player_elo, _ = PlayerElo.objects.get_or_create(
         player=player,
         gamemode=gamemode,
         defaults={'elo': elo, 'cat': str(cat) if cat is not None else 'no'}
     )
 
-    # Update existing entry
+    
     player_elo.elo = elo
     if cat is not None:
         player_elo.cat = str(cat)
     player_elo.save()
 
-    # Invalidate leaderboard cache whenever scores change.
+    
     cache.clear()
 
     return Response({
@@ -130,7 +130,7 @@ def leaderboard_api(request, gamemode):
     
     items_per_page = 100
     
-    # If "overall", compute average ELO per player using DB aggregation
+    
     if gamemode.lower() == "overall":
         cache_key = f"leaderboard_overall_page_{page}"
         cached_result = cache.get(cache_key)
@@ -161,7 +161,7 @@ def leaderboard_api(request, gamemode):
         cache.set(cache_key, result, 300)
         return JsonResponse({gamemode: result})
 
-    # Specific gamemode
+    
     players_qs = PlayerElo.objects.filter(gamemode__iexact=gamemode).order_by("-elo")
     paginator = Paginator(players_qs, items_per_page)
     try:

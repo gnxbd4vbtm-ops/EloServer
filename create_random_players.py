@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 from pathlib import Path
 
-# Load .env
+
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 API_KEY = os.getenv("API_KEY")
@@ -14,7 +14,7 @@ if not API_KEY:
     print("API_KEY not found in .env")
     exit(1)
 
-# Define possible gamemodes
+
 GAMEMODES = ["mace", "vanilla", "nethPot", "uhc", "diaPot", "sword", "axe"]
 
 def generate_random_name(length=8):
@@ -34,7 +34,7 @@ def main():
         print("Invalid number")
         return
 
-    base_url = os.getenv("BASE_URL", "http://localhost:8000")  # Adjust if needed
+    base_url = os.getenv("BASE_URL", "http://localhost:8000")  
 
     for i in range(num_players):
         ign, gamemode, elo, cat = create_random_player()

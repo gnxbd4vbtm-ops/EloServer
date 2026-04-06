@@ -51,16 +51,16 @@ def _warm_leaderboard_cache():
         except Exception:
             logger.exception("Cache warmer failed for %s", path)
 
-    # Warm the leaderboard page template
+    
     _cache_path("/leaderboard/", views.leaderboard)
 
-    # Warm the overall leaderboard pages
+    
     total_players = Player.objects.count()
     overall_pages = math.ceil(total_players / PAGE_SIZE) if total_players else 1
     for page in range(1, overall_pages + 1):
         _cache_path(f"/api/v1/leaderboard/overall/?page={page}", views.leaderboard_api, "overall")
 
-    # Warm each gamemode leaderboard page
+    
     gamemodes = PlayerElo.objects.values_list("gamemode", flat=True).distinct()
     for gamemode in gamemodes:
         count = PlayerElo.objects.filter(gamemode__iexact=gamemode).count()

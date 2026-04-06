@@ -12,8 +12,8 @@ class Player(models.Model):
 class PlayerElo(models.Model):
     player = models.ForeignKey(Player, related_name="elos", on_delete=models.CASCADE)
     gamemode = models.CharField(max_length=100)
-    elo = models.IntegerField(default=1000)  # NOT NULL with default
-    cat = models.CharField(max_length=10, default="no")  # defaults to "no"
+    elo = models.IntegerField(default=1000)  
+    cat = models.CharField(max_length=10, default="no")  
     last_updated = models.DateTimeField(auto_now=True)
 
 

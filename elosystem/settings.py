@@ -6,14 +6,14 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 
-# --------------------------------------------------
-# BASE DIR
-# --------------------------------------------------
+
+
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# --------------------------------------------------
-# ENV
-# --------------------------------------------------
+
+
+
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret-key")
@@ -21,11 +21,10 @@ ELO_API_KEY = os.getenv("API_KEY")
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost,https://drainless-ungrumpy-messiah.ngrok-free.dev,testserver").split(",")
+ALLOWED_HOSTS = ["*"]
 
-# --------------------------------------------------
-# APPS
-# --------------------------------------------------
+
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -34,17 +33,17 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # third-party
+    
     "rest_framework",
     "channels",
 
-    # local
+    
     "elo.apps.EloConfig",
 ]
 
-# --------------------------------------------------
-# MIDDLEWARE
-# --------------------------------------------------
+
+
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -56,9 +55,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# --------------------------------------------------
-# URL / TEMPLATE
-# --------------------------------------------------
+
+
+
 ROOT_URLCONF = "elosystem.urls"
 
 TEMPLATES = [
@@ -77,39 +76,40 @@ TEMPLATES = [
     },
 ]
 
-# --------------------------------------------------
-# ASGI / WSGI
-# --------------------------------------------------
+
+
+
 ASGI_APPLICATION = "elosystem.asgi.application"
 WSGI_APPLICATION = "elosystem.wsgi.application"
 
-# --------------------------------------------------
-# CHANNELS
-# --------------------------------------------------
+
+
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels.layers.InMemoryChannelLayer",
     }
 }
 
-# --------------------------------------------------
-# DATABASE
-# --------------------------------------------------
+
+
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "elo_db",
-        "USER": "byte.blast",
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
-        "HOST": "localhost",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'elo',                
+        'USER': 'byte.blast',        
+        'PASSWORD': 'n6T5Z8.‘', 
+        'HOST': 'localhost',          
+        'PORT': '5433',               
     }
-}
+} 
 
 
-# --------------------------------------------------
-# CACHE
-# --------------------------------------------------
+
+
+
+
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -117,9 +117,9 @@ CACHES = {
     }
 }
 
-# --------------------------------------------------
-# DRF
-# --------------------------------------------------
+
+
+
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": (
         "rest_framework.renderers.JSONRenderer",
@@ -132,9 +132,9 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 100
 }
 
-# --------------------------------------------------
-# AUTH / I18N
-# --------------------------------------------------
+
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
@@ -147,9 +147,9 @@ TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# --------------------------------------------------
-# STATIC
-# --------------------------------------------------
+
+
+
 STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"

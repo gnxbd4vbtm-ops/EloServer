@@ -9,18 +9,18 @@ from typing import Optional, List, Dict, Any
 import logging
 import math
 
-# Setup logging
+
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Load environment
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-#API_BASE = os.getenv("API_BASE", "https://drainless-ungrumpy-messiah.ngrok-free.dev/api/v1")
+
 API_BASE = os.getenv("API_BASE", "http://localhost:8000/api/v1")
 
 
-# Constants
+
 GAMEMODES = ["overall", "vanilla", "mace", "nethPot", "uhc", "diaPot", "sword", "axe"]
 EMBED_COLORS = {
     "elite": discord.Color.purple(),
@@ -145,13 +145,13 @@ async def get_elo(
     if not entries:
         return await interaction.followup.send(f"❌ Player '{ign}' not found")
 
-    # Filter by gamemode if specified
+    
     if gamemode:
         entries = [e for e in entries if e["gamemode"].lower() == gamemode.lower()]
         if not entries:
             return await interaction.followup.send(f"❌ No {gamemode} data for '{ign}'")
 
-    # Create embed
+    
     embed = discord.Embed(
         title=f"🎮 ELO Stats — {ign}",
         color=get_rank_color(entries[0]["rank"]),
@@ -200,10 +200,10 @@ async def leaderboard(
     if not entries:
         return await interaction.followup.send(f"❌ No {gamemode} leaderboard data found")
 
-    # Create embed with first 10 entries
+    
     embed = create_leaderboard_embed(gamemode, page, entries[:10], (page-1)*100 + 1)
 
-    # Create view for pagination
+    
     view = LeaderboardView(gamemode, page, entries, has_next)
     await interaction.followup.send(embed=embed, view=view)
 
@@ -218,7 +218,7 @@ def create_leaderboard_embed(gamemode: str, api_page: int, players: List[Dict], 
 
     for i, player in enumerate(players, start=start_rank):
         embed.add_field(
-            name=f"#{i} {player['ign']}",
+            name=f"
             value=(
                 f"**ELO:** `{player['elo']:,}`\n"
                 f"**Rank:** {player['rank']}\n"
@@ -226,7 +226,7 @@ def create_leaderboard_embed(gamemode: str, api_page: int, players: List[Dict], 
             ),
             inline=False
         )
-        if i < start_rank + len(players) - 1:  # Add separator except after last
+        if i < start_rank + len(players) - 1:  
             embed.add_field(name="ㅤ", value="─" * 30, inline=False)
 
     embed.set_footer(text="MCR ELO System")
@@ -266,7 +266,7 @@ class LeaderboardView(discord.ui.View):
 
         for i, player in enumerate(page_entries, start=start + (self.api_page-1)*100 + 1):
             embed.add_field(
-                name=f"#{i} {player['ign']}",
+                name=f"
                 value=(
                     f"**ELO:** `{player['elo']:,}`\n"
                     f"**Rank:** {player['rank']}\n"
@@ -283,7 +283,7 @@ class LeaderboardView(discord.ui.View):
         if self.discord_page > 0:
             self.discord_page -= 1
         elif self.api_page > 1:
-            # Need to fetch previous API page
+            
             await interaction.response.defer()
             await leaderboard.callback(interaction, self.gamemode, self.api_page - 1)
             return
@@ -296,7 +296,7 @@ class LeaderboardView(discord.ui.View):
         if self.discord_page < self.max_discord_pages - 1:
             self.discord_page += 1
         elif self.has_next_api_page:
-            # Fetch next API page
+            
             await interaction.response.defer()
             await leaderboard.callback(interaction, self.gamemode, self.api_page + 1)
             return

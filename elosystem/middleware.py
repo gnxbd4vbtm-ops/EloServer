@@ -91,5 +91,5 @@ class RequestLoggingMiddleware:
         try:
             logger.info(json.dumps(entry, ensure_ascii=False))
         except Exception:
-            # Do not break request handling because logging failed.
+            
             pass

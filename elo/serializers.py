@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Player, PlayerElo
 
 class PlayerEloSerializer(serializers.ModelSerializer):
-    rank = serializers.ReadOnlyField()  # return the rank property
+    rank = serializers.ReadOnlyField()  
 
     class Meta:
         model = PlayerElo

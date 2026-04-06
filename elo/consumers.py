@@ -24,11 +24,11 @@ class LeaderboardConsumer(AsyncWebsocketConsumer):
                 "cat": elo.cat
             })
 
-        # Top 100 per gamemode
+        
         for mode in leaderboard:
             leaderboard[mode] = sorted(leaderboard[mode], key=lambda x: x["elo"], reverse=True)[:100]
 
-        # Overall top 100
+        
         overall_dict = {}
         for elo in elos:
             ign = elo.player.ign

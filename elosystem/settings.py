@@ -99,7 +99,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'elo',                
         'USER': 'byte.blast',        
-        'PASSWORD': 'n6T5Z8.‘', 
+        'PASSWORD': 'n6T5Z8.', 
         'HOST': 'localhost',          
         'PORT': '5433',               
     }

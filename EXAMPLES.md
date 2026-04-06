@@ -16,9 +16,9 @@ API_KEY=$(grep '^API_KEY=' .env | cut -d'=' -f2) && curl -X POST \
   -H "X-API-KEY: $API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
-    "ign": "Notch",
+    "ign": "Byte_Blast",
     "gamemode": "mace",
-    "elo": 1850,
+    "elo": 1852132130,
     "cat": "yes"
   }' \
   http://localhost:8000/api/v1/elo/set/

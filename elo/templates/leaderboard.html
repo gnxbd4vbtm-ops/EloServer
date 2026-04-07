@@ -2,211 +2,928 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Minecraft ELO Leaderboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<title>MCR ELO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body {
-    margin: 0;
-    background: #0b0b0b;
-    color: #eee;
-    font-family: "Segoe UI", sans-serif;
+  :root {
+    --bg: #080b0f;
+    --surface: #0d1117;
+    --surface2: #111820;
+    --border: #1e2d3d;
+    --border2: #243040;
+    --text: #c9d1d9;
+    --muted: #6e8098;
+    --accent: #00d4ff;
+    --accent2: #0097b8;
+    --green: #3fb950;
+    --purple: #9b59f7;
+    --blue: #2f80ed;
+    --red: #f85149;
+    --gold: #f0b429;
+    --bronze: #cd7f32;
+    --silver: #bdc3c7;
+
+    --rank-elite: #9b59f7;
+    --rank-adept: #2f80ed;
+    --rank-apprentice: #3fb950;
+    --rank-contender: #f85149;
+    --rank-cat: #cd7f32;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Glow top */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 800px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(0,212,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 40px 0 32px;
     display: flex;
-    justify-content: center;
-}
-
-.container {
-    width: 95%;
-    max-width: 1200px;
-    text-align: center;
-}
-
-h1 {
-    color: gold;
-    margin: 30px 0 10px;
-}
-
-input {
-    padding: 10px;
-    width: 260px;
-    border-radius: 6px;
-    border: none;
-    background: #1a1a1a;
-    color: white;
-    margin: 20px 0;
-}
-
-.tabs {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
-}
-
-.tab-button {
-    padding: 10px 20px;
-    margin: 5px;
-    background: #1e1e1e;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    color: gold;
-    font-weight: bold;
-}
-
-.tab-button.active {
-    background: gold;
-    color: #0b0b0b;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #121212;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
     margin-bottom: 40px;
-}
+  }
 
-th, td {
-    padding: 10px;
-    border-bottom: 1px solid #2a2a2a;
+  .logo {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .logo-mcr {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing: 4px;
+    text-shadow: 0 0 20px rgba(0,212,255,0.4);
+  }
+
+  .logo-elo {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .latency {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .latency-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* NAV TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .tab {
+    padding: 10px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: -1px;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  /* PANEL */
+  .panel { display: none; animation: fadeIn 0.3s ease; }
+  .panel.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SEARCH BAR */
+  .search-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+
+  .input-wrap {
+    flex: 1;
+    position: relative;
+  }
+
+  .input-label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--bg);
+    padding: 0 4px;
+  }
+
+  input[type="text"], select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    appearance: none;
+  }
+
+  input[type="text"]:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent2), 0 0 20px rgba(0,212,255,0.08);
+  }
+
+  select {
+    cursor: pointer;
+    padding-right: 36px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236e8098' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+  }
+
+  select option { background: var(--surface2); }
+
+  .btn {
+    padding: 12px 24px;
+    background: var(--accent);
+    border: none;
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .btn:hover {
+    background: #33dfff;
+    box-shadow: 0 0 20px rgba(0,212,255,0.3);
+  }
+
+  .btn:active { transform: scale(0.98); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--muted);
+  }
+
+  .btn-ghost:hover {
+    background: var(--surface2);
+    color: var(--text);
+    box-shadow: none;
+  }
+
+  /* PLAYER CARD */
+  .player-header {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    padding: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .player-avatar {
+    width: 56px; height: 56px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+
+  .player-name {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .player-subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .gamemode-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+
+  .gm-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 18px;
+    transition: border-color 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gm-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-color, var(--accent));
+  }
+
+  .gm-card:hover {
+    border-color: var(--card-color, var(--accent));
+    transform: translateY(-2px);
+  }
+
+  .gm-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--card-color, var(--accent));
+    margin-bottom: 10px;
+  }
+
+  .gm-elo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 28px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .gm-rank {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 2px;
+  }
+
+  .gm-cat {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    opacity: 0.6;
+  }
+
+  /* LEADERBOARD */
+  .lb-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .lb-controls .input-wrap { max-width: 200px; }
+
+  .lb-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .lb-head {
+    display: grid;
+    grid-template-columns: 60px 1fr 140px 1fr;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface2);
+  }
+
+  .lb-head span {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .lb-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 140px 1fr;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background 0.15s;
+    animation: rowIn 0.3s ease both;
+  }
+
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateX(-8px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .lb-row:last-child { border-bottom: none; }
+  .lb-row:hover { background: var(--surface2); }
+
+  .lb-rank {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .lb-rank.top1 { color: var(--gold); font-size: 16px; }
+  .lb-rank.top2 { color: var(--silver); }
+  .lb-rank.top3 { color: var(--bronze); }
+
+  .lb-ign {
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+
+  .lb-ign:hover { color: var(--accent); }
+
+  .lb-elo {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 15px;
+    color: var(--accent);
+  }
+
+  .lb-rank-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+  }
+
+  .lb-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 16px;
+    padding: 12px 0;
+  }
+
+  .lb-page-info {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .page-btns { display: flex; gap: 8px; }
+
+  /* RANKS TABLE */
+  .ranks-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .rank-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 140px;
+    align-items: center;
+    padding: 14px 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+    gap: 16px;
+  }
+
+  .rank-row:hover { border-color: var(--border2); }
+
+  .rank-elo-range {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .rank-title {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .rank-bar-wrap {
+    height: 4px;
+    background: var(--surface2);
+    overflow: hidden;
+  }
+
+  .rank-bar {
+    height: 100%;
+    background: var(--row-color, var(--accent));
+    transition: width 1s ease;
+  }
+
+  /* STATE DISPLAYS */
+  .state {
+    padding: 60px 20px;
     text-align: center;
-}
+    color: var(--muted);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+  }
 
-th {
-    background: #1e1e1e;
-    color: gold;
-}
+  .state-icon { font-size: 32px; margin-bottom: 12px; }
+  .state-text { margin-bottom: 6px; }
+  .state-sub { font-size: 11px; opacity: 0.6; }
 
+  .error-msg {
+    background: rgba(248,81,73,0.08);
+    border: 1px solid rgba(248,81,73,0.3);
+    color: var(--red);
+    padding: 12px 18px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
 
+  /* SPINNER */
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin: 0 auto 12px;
+  }
 
-.rank-cell {
-    font-weight: bold;
-}
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 
-.glow {
-    animation: glow 1.5s infinite alternate;
-    color: gold;
-}
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
 
-@keyframes glow {
-    from { text-shadow: 0 0 5px gold; }
-    to { text-shadow: 0 0 15px gold; }
-}
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
 
-.top3 {
-    background: linear-gradient(to right, #FFD700, #FFAA00, #FF5500);
-    animation: animateTop3 2s infinite alternate;
-}
-
-@keyframes animateTop3 {
-    0% { background-position: left; }
-    100% { background-position: right; }
-}
-
-@media (max-width: 768px) {
-    table, th, td {
-        font-size: 12px;
-    }
-    input {
-        width: 90%;
-    }
-    .tabs {
-        flex-direction: column;
-    }
-}
+  /* Responsive */
+  @media (max-width: 600px) {
+    .lb-head, .lb-row { grid-template-columns: 48px 1fr 100px; }
+    .lb-head span:last-child, .lb-rank-name { display: none; }
+    .gamemode-grid { grid-template-columns: 1fr 1fr; }
+    .rank-row { grid-template-columns: 90px 1fr; }
+    .rank-bar-wrap { display: none; }
+  }
 </style>
 </head>
-
 <body>
-<div class="container">
+<div class="wrapper">
+  <header>
+    <div class="logo">
+      <span class="logo-mcr">MCR</span>
+      <span class="logo-elo">ELO System</span>
+    </div>
+    <div class="latency">
+      <div class="latency-dot" id="statusDot"></div>
+      <span id="statusText">connecting...</span>
+    </div>
+  </header>
 
-<h1>Minecraft ELO Leaderboard</h1>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('elo', this)">Player Lookup</button>
+    <button class="tab" onclick="switchTab('leaderboard', this)">Leaderboard</button>
+    <button class="tab" onclick="switchTab('ranks', this)">Rank Tiers</button>
+  </div>
 
-<input id="search" placeholder="Search IGN..." onkeyup="filterRows()">
+  <!-- ELO PANEL -->
+  <div class="panel active" id="panel-elo">
+    <div class="search-row">
+      <div class="input-wrap" style="flex:2">
+        <span class="input-label">IGN</span>
+        <input type="text" id="ign-input" placeholder="Enter username..." onkeydown="if(event.key==='Enter') fetchElo()">
+      </div>
+      <div class="input-wrap" style="flex:1">
+        <span class="input-label">Gamemode</span>
+        <select id="gm-filter">
+          <option value="">All gamemodes</option>
+          <option>overall</option><option>vanilla</option><option>mace</option>
+          <option>nethPot</option><option>uhc</option><option>diaPot</option>
+          <option>sword</option><option>axe</option>
+        </select>
+      </div>
+      <button class="btn" onclick="fetchElo()">Search</button>
+    </div>
+    <div id="elo-result"></div>
+  </div>
 
-<div class="tabs">
-    <button class="tab-button active" data-mode="overall">Overall</button>
-    <button class="tab-button" data-mode="mace">Mace</button>
-    <button class="tab-button" data-mode="vanilla">Vanilla</button>
-</div>
+  <!-- LEADERBOARD PANEL -->
+  <div class="panel" id="panel-leaderboard">
+    <div class="lb-controls">
+      <div class="input-wrap">
+        <span class="input-label">Gamemode</span>
+        <select id="lb-gm" onchange="loadLeaderboard(1)">
+          <option>overall</option><option>vanilla</option><option>mace</option>
+          <option>nethPot</option><option>uhc</option><option>diaPot</option>
+          <option>sword</option><option>axe</option>
+        </select>
+      </div>
+    </div>
+    <div id="lb-result"></div>
+    <div class="lb-pagination" id="lb-pagination" style="display:none">
+      <span class="lb-page-info" id="lb-page-info"></span>
+      <div class="page-btns">
+        <button class="btn btn-ghost" id="lb-prev" onclick="lbPageChange(-1)">← Prev</button>
+        <button class="btn btn-ghost" id="lb-next" onclick="lbPageChange(1)">Next →</button>
+      </div>
+    </div>
+  </div>
 
-<table id="leaderboard-table">
-<thead>
-<tr>
-    <th>#</th>
-    <th>IGN</th>
-    <th>ELO</th>
-    <th>Rank</th>
-    <th>Cat</th>
-    <th>Last Updated</th>
-</tr>
-</thead>
-<tbody>
-<!-- Rows will be populated via JS -->
-</tbody>
-</table>
-
+  <!-- RANKS PANEL -->
+  <div class="panel" id="panel-ranks">
+    <p class="section-title">Tier List</p>
+    <div class="ranks-grid">
+      <div class="rank-row" style="--row-color:#f85149">
+        <span class="rank-elo-range">2400+</span>
+        <span class="rank-title" style="color:#f85149">get a life</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#f85149">
+        <span class="rank-elo-range">2200 – 2399</span>
+        <span class="rank-title" style="color:#f85149">Tier 01 — Contender</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:92%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#9b59f7">
+        <span class="rank-elo-range">1800 – 2199</span>
+        <span class="rank-title" style="color:#9b59f7">Tier 02 — Elite I</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:80%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#9b59f7">
+        <span class="rank-elo-range">1400 – 1799</span>
+        <span class="rank-title" style="color:#9b59f7">Tier 03 — Elite II</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:68%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#2f80ed">
+        <span class="rank-elo-range">1000 – 1399</span>
+        <span class="rank-title" style="color:#2f80ed">Tier 04 — Combat Adept I</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:56%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#2f80ed">
+        <span class="rank-elo-range">800 – 999</span>
+        <span class="rank-title" style="color:#2f80ed">Tier 05 — Combat Adept II</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:44%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#2f80ed">
+        <span class="rank-elo-range">600 – 799</span>
+        <span class="rank-title" style="color:#2f80ed">Tier 06 — Combat Adept III</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:36%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#3fb950">
+        <span class="rank-elo-range">400 – 599</span>
+        <span class="rank-title" style="color:#3fb950">Tier 07 — Combat Apprentice I</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:28%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#3fb950">
+        <span class="rank-elo-range">200 – 399</span>
+        <span class="rank-title" style="color:#3fb950">Tier 08 — Combat Apprentice II</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:20%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#3fb950">
+        <span class="rank-elo-range">100 – 199</span>
+        <span class="rank-title" style="color:#3fb950">Tier 09 — Combat Apprentice III</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:12%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#cd7f32">
+        <span class="rank-elo-range">0 – 99</span>
+        <span class="rank-title" style="color:#cd7f32">a cute but dumb cat</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:6%"></div></div>
+      </div>
+      <div class="rank-row" style="--row-color:#6e8098">
+        <span class="rank-elo-range">Below 0</span>
+        <span class="rank-title" style="color:#6e8098">still smarter than Declan</span>
+        <div class="rank-bar-wrap"><div class="rank-bar" style="width:2%"></div></div>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-const tableBody = document.querySelector("#leaderboard-table tbody");
-const searchInput = document.getElementById("search");
-const tabs = document.querySelectorAll(".tab-button");
+const API = 'https://ageless-tinley-unveritably.ngrok-free.dev/api/v1';
+const GAMEMODES = ['overall','vanilla','mace','nethPot','uhc','diaPot','sword','axe'];
 
-// Fetch leaderboard for a given mode
-function fetchLeaderboard(mode) {
-    fetch(`/api/v1/leaderboard/${mode}/`)
-    .then(res => res.json())
-    .then(data => {
-        const players = data[mode];
-        tableBody.innerHTML = "";
-
-        players.forEach((p, i) => {
-            const row = document.createElement("tr");
-
-            if(i < 3) row.classList.add("top3");
-
-            row.innerHTML = `
-                <td>${i+1}</td>
-                <td>${p.ign}</td>
-                <td class="${p.elo >= 2000 ? 'glow' : ''}">${p.elo}</td>
-                <td class="rank-cell">${p.rank}</td>
-                <td>${p.cat}</td>
-                <td>${new Date(p.last_updated).toLocaleString()}</td>
-            `;
-            tableBody.appendChild(row);
-        });
-
-        filterRows(); // apply search filter after populating
-    })
-    .catch(err => {
-        console.error("Error fetching leaderboard:", err);
-        tableBody.innerHTML = "<tr><td colspan='6'>Failed to load data.</td></tr>";
-    });
-}
-
-// Search/filter function
-function filterRows() {
-    const val = searchInput.value.toLowerCase();
-    tableBody.querySelectorAll("tr").forEach(row => {
-        const ign = row.cells[1].textContent.toLowerCase();
-        row.style.display = ign.includes(val) ? "" : "none";
-    });
-}
+let lbState = { apiPage: 1, discordPage: 0, entries: [], hasNext: false };
 
 // Tab switching
-tabs.forEach(tab => {
-    tab.addEventListener("click", () => {
-        tabs.forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-        fetchLeaderboard(tab.dataset.mode);
-        searchInput.value = "";
-    });
-});
+function switchTab(name, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+  if (name === 'leaderboard' && !lbState.entries.length) loadLeaderboard(1);
+}
 
-// Default load
-fetchLeaderboard("overall");
+// Rank color mapping
+function rankColor(rank) {
+  const r = rank.toLowerCase();
+  if (r.includes('elite')) return '#9b59f7';
+  if (r.includes('adept')) return '#2f80ed';
+  if (r.includes('apprentice')) return '#3fb950';
+  if (r.includes('contender')) return '#f85149';
+  if (r.includes('dumb cat') || r.includes('cute')) return '#cd7f32';
+  if (r.includes('smarter')) return '#6e8098';
+  if (r.includes('get a life')) return '#f85149';
+  return '#00d4ff';
+}
+
+// Ping / status check
+async function checkStatus() {
+  const dot = document.getElementById('statusDot');
+  const txt = document.getElementById('statusText');
+  try {
+    const start = Date.now();
+    await fetch(API + '/leaderboard/overall/?page=1', { signal: AbortSignal.timeout(5000) });
+    const ms = Date.now() - start;
+    dot.style.background = '#3fb950';
+    dot.style.boxShadow = '0 0 8px #3fb950';
+    txt.textContent = `API ${ms}ms`;
+  } catch {
+    dot.style.background = '#f85149';
+    dot.style.boxShadow = '0 0 8px #f85149';
+    txt.textContent = 'API offline';
+  }
+}
+
+checkStatus();
+setInterval(checkStatus, 30000);
+
+// ELO fetch
+async function fetchElo() {
+  const ign = document.getElementById('ign-input').value.trim();
+  const gm = document.getElementById('gm-filter').value;
+  const out = document.getElementById('elo-result');
+
+  if (!ign) {
+    out.innerHTML = `<div class="error-msg">Enter a username first.</div>`;
+    return;
+  }
+
+  out.innerHTML = `<div class="state"><div class="spinner"></div><div class="state-text">Fetching ${ign}...</div></div>`;
+
+  try {
+    const res = await fetch(`${API}/elo/${ign}/`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    let entries = data[ign] || [];
+    if (!entries.length) {
+      out.innerHTML = `<div class="error-msg">Player '${ign}' not found.</div>`;
+      return;
+    }
+
+    if (gm) entries = entries.filter(e => e.gamemode.toLowerCase() === gm.toLowerCase());
+    if (!entries.length) {
+      out.innerHTML = `<div class="error-msg">No ${gm} data for '${ign}'.</div>`;
+      return;
+    }
+
+    const topRank = entries[0].rank;
+    const color = rankColor(topRank);
+
+    let html = `
+      <div class="player-header" style="border-left: 3px solid ${color}">
+        <div class="player-avatar">⚔️</div>
+        <div>
+          <div class="player-name">${ign}</div>
+          <div class="player-subtitle">${entries.length} gamemode${entries.length !== 1 ? 's' : ''} • MCR ELO System</div>
+        </div>
+      </div>
+      <p class="section-title">Gamemode Stats</p>
+      <div class="gamemode-grid">
+    `;
+
+    for (const e of entries) {
+      const c = rankColor(e.rank);
+      html += `
+        <div class="gm-card" style="--card-color:${c}">
+          <div class="gm-label">${e.gamemode}</div>
+          <div class="gm-elo">${Number(e.elo).toLocaleString()}</div>
+          <div class="gm-rank">${e.rank}</div>
+          <div class="gm-cat">${e.cat || ''}</div>
+        </div>
+      `;
+    }
+
+    html += `</div>`;
+    out.innerHTML = html;
+
+  } catch (err) {
+    out.innerHTML = `<div class="error-msg">Failed to fetch data: ${err.message}</div>`;
+  }
+}
+
+// Leaderboard
+async function loadLeaderboard(apiPage) {
+  const gm = document.getElementById('lb-gm').value;
+  const out = document.getElementById('lb-result');
+  const pg = document.getElementById('lb-pagination');
+
+  out.innerHTML = `<div class="state"><div class="spinner"></div><div class="state-text">Loading ${gm} leaderboard...</div></div>`;
+  pg.style.display = 'none';
+
+  try {
+    const res = await fetch(`${API}/leaderboard/${gm}/?page=${apiPage}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const entries = data[gm] || [];
+
+    if (!entries.length) {
+      out.innerHTML = `<div class="error-msg">No data for ${gm} page ${apiPage}.</div>`;
+      return;
+    }
+
+    lbState = {
+      apiPage,
+      discordPage: 0,
+      entries,
+      hasNext: entries.length === 100,
+      gm
+    };
+
+    renderLb();
+
+  } catch (err) {
+    out.innerHTML = `<div class="error-msg">Failed to load leaderboard: ${err.message}</div>`;
+  }
+}
+
+function renderLb() {
+  const { apiPage, discordPage, entries, hasNext, gm } = lbState;
+  const perPage = 10;
+  const maxPages = Math.ceil(entries.length / perPage);
+  const start = discordPage * perPage;
+  const page = entries.slice(start, start + perPage);
+  const baseRank = (apiPage - 1) * 100 + start + 1;
+
+  const out = document.getElementById('lb-result');
+  const pg = document.getElementById('lb-pagination');
+  const info = document.getElementById('lb-page-info');
+
+  let rows = page.map((p, i) => {
+    const rank = baseRank + i;
+    let rankClass = 'lb-rank';
+    if (rank === 1) rankClass += ' top1';
+    else if (rank === 2) rankClass += ' top2';
+    else if (rank === 3) rankClass += ' top3';
+
+    const prefix = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+    const c = rankColor(p.rank);
+
+    return `
+      <div class="lb-row" style="animation-delay:${i * 0.03}s">
+        <span class="${rankClass}">${prefix}</span>
+        <span class="lb-ign" onclick="lookupPlayer('${p.ign}')">${p.ign}</span>
+        <span class="lb-elo">${Number(p.elo).toLocaleString()}</span>
+        <span class="lb-rank-name" style="color:${c}">${p.rank}</span>
+      </div>
+    `;
+  }).join('');
+
+  out.innerHTML = `
+    <div class="lb-table">
+      <div class="lb-head">
+        <span>Rank</span><span>Player</span><span>ELO</span><span>Tier</span>
+      </div>
+      ${rows}
+    </div>
+  `;
+
+  pg.style.display = 'flex';
+  info.textContent = `Page ${discordPage + 1} of ${maxPages} (API page ${apiPage})`;
+
+  document.getElementById('lb-prev').disabled = discordPage === 0 && apiPage === 1;
+  document.getElementById('lb-next').disabled = discordPage >= maxPages - 1 && !hasNext;
+}
+
+function lbPageChange(dir) {
+  const { discordPage, entries, hasNext, apiPage } = lbState;
+  const perPage = 10;
+  const maxPages = Math.ceil(entries.length / perPage);
+
+  if (dir === 1) {
+    if (discordPage < maxPages - 1) {
+      lbState.discordPage++;
+      renderLb();
+    } else if (hasNext) {
+      loadLeaderboard(apiPage + 1);
+    }
+  } else {
+    if (discordPage > 0) {
+      lbState.discordPage--;
+      renderLb();
+    } else if (apiPage > 1) {
+      loadLeaderboard(apiPage - 1);
+    }
+  }
+}
+
+function lookupPlayer(ign) {
+  document.getElementById('ign-input').value = ign;
+  document.getElementById('gm-filter').value = '';
+  document.querySelectorAll('.tab')[0].click();
+  fetchElo();
+}
 </script>
-
 </body>
 </html>

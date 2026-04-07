@@ -44,5 +44,7 @@ class PlayerElo(models.Model):
             return "Tier 02 - Elite I"
         elif self.elo < 2400:
             return "Tier 01 - Contender"
-        else:
+        elif self.elo < 2700:
             return "get a life"
+        else:
+            return "9 lives"

@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     
-    path("leaderboard/", views.leaderboard, name="leaderboard"),
+    path("", views.leaderboard, name="leaderboard"),
 
     
     path("api/v1/leaderboard/<str:gamemode>/", views.leaderboard_api, name="leaderboard_api"),

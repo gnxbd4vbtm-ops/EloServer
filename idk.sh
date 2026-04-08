@@ -8,7 +8,7 @@ docker start postgres 2>/dev/null || docker run -d --name postgres \
   postgres
 
 sleep 3
-
+python manage.py migrate
 uvicorn elosystem.asgi:application --reload &
 python "dc_stuff/elo getter/MCR_Bot.py" &
-ngrok http 8000
+ngrok http 8000 &

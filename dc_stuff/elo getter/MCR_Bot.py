@@ -17,7 +17,7 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 
 API_BASE = os.getenv("API_BASE", "http://localhost:8000/api/v1")
 
-GAMEMODES = ["overall", "vanilla", "mace", "nethPot", "uhc", "diaPot", "sword", "axe"]
+GAMEMODES = ["overall", "vanilla", "mace", "nethPot", "uhc", "diaPot", "sword", "axe", "gooning"] #ignore the last one its js work annoying my friend
 EMBED_COLORS = {
     "elite": discord.Color.purple(),
     "adept": discord.Color.blue(),

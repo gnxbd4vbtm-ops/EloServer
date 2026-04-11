@@ -15,7 +15,7 @@ if not API_KEY:
     exit(1)
 
 
-GAMEMODES = ["mace", "vanilla", "nethPot", "uhc", "diaPot", "sword", "axe"]
+GAMEMODES = ["mace", "vanilla", "nethPot", "uhc", "diaPot", "sword", "axe", "sword"]
 
 def generate_random_name(length=8):
     return ''.join(random.choices(string.ascii_letters + string.digits, k=length))

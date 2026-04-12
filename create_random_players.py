@@ -23,8 +23,8 @@ def generate_random_name(length=8):
 def create_random_player():
     ign = generate_random_name()
     gamemode = random.choice(GAMEMODES)
-    elo = random.randint(0, 5000)
-    cat = random.choice(["yes", "no"])
+    elo = random.randint(0, 50000)
+    cat = "no"
     return ign, gamemode, elo, cat
 
 def main():

@@ -4,14 +4,14 @@ rm *.log
 rm *.log.*
 
 set -e
-
+sudo apt update
 curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
   | sudo tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null
 
 echo "deb https://ngrok-agent.s3.amazonaws.com bookworm main" \
   | sudo tee /etc/apt/sources.list.d/ngrok.list
 
-sudo apt install -y ngrok
+sudo apt install ngrok
 
 docker start postgres 2>/dev/null || docker run -d --name postgres \
   -p 5433:5432 \

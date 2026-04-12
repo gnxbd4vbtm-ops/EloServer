@@ -21,8 +21,7 @@ ELO_API_KEY = os.getenv("API_KEY")
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-ALLOWED_HOSTS = ["*"]
-
+ALLOWED_HOSTS = ['.localhost', '127.0.0.1', '[::1]', 'testserver', 'ageless-tinley-unveritably.ngrok-free.dev']
 
 
 INSTALLED_APPS = [

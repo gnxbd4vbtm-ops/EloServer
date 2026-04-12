@@ -800,7 +800,7 @@ async function fetchElo() {
           <div class="gm-label">${e.gamemode}</div>
           <div class="gm-elo">${Number(e.elo).toLocaleString()}</div>
           <div class="gm-rank">${e.rank}</div>
-          <div class="gm-cat">${e.cat || ''}</div>
+          <div class="gm-cat">Cat: ${e.cat || ''}</div>
         </div>
       `;
     }

@@ -11,7 +11,6 @@ curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
 echo "deb https://ngrok-agent.s3.amazonaws.com bookworm main" \
   | sudo tee /etc/apt/sources.list.d/ngrok.list
 
-sudo apt update
 sudo apt install -y ngrok
 
 docker start postgres 2>/dev/null || docker run -d --name postgres \

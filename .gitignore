@@ -20,3 +20,5 @@ media/
 
 #editor
 .idea
+.code
+.vscode

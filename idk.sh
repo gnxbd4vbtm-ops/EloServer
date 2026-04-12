@@ -1,5 +1,8 @@
 #!/bin/bash
 
+rm *.log
+rm *.log.*
+
 set -e
 
 curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \

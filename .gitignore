@@ -23,3 +23,6 @@ media/
 .idea
 .code
 .vscode
+
+#shell 
+idk.sh

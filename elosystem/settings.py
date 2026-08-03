@@ -4,9 +4,12 @@ Django settings for elosystem project.
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
 
-
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - fallback for environments without python-dotenv
+    def load_dotenv(*args, **kwargs):
+        return False
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -98,14 +101,10 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'elo',                
-        'USER': 'byte.blast',        
-        'PASSWORD': 'n6T5Z8.', 
-        'HOST': 'localhost',          
-        'PORT': '5433',               
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-} 
+}
 
 
 

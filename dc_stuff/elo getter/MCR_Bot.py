@@ -50,7 +50,11 @@ class ELOBot(commands.Bot):
         url = f"{API_BASE}/{endpoint.lstrip('/')}"
         logger.info(f"📡 API request: GET {url}")
         try:
-            async with self.session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
+            async with self.session.get(
+                url,
+                timeout=aiohttp.ClientTimeout(total=10),
+                headers={"ngrok-skip-browser-warning": "true"}
+            ) as resp:
                 logger.info(f"📨 Response status: {resp.status}")
                 resp.raise_for_status()
                 data = await resp.json()

@@ -45,7 +45,8 @@ def main():
             "cat": cat
         }
         headers = {
-            "X-API-KEY": API_KEY
+            "X-API-KEY": API_KEY,
+            "ngrok-skip-browser-warning": "true"
         }
         try:
             response = requests.post(
